@@ -40,13 +40,12 @@ function renderProducts(category = "Todos", search = "") {
   if (!grid) return;
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory =
-  category === "Todos" ||
-  product.category.trim().toUpperCase() === category.trim().toUpperCase();
-
+    
     const matchesSearch =
       product.name.toLowerCase().includes(search.toLowerCase());
-
+      const matchesCategory =
+  category === "Todos" ||
+  product.category.trim().toUpperCase() === category.trim().toUpperCase();
     return matchesCategory && matchesSearch;
   });
 
