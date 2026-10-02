@@ -15,9 +15,9 @@ const products = [
   },
   {
     id: 3,
-    name: "Oferta Pink",
-    category: "COMUNS",
-    price: 39.90,
+    name: "Party Ballons",
+    category: "LENDÁRIOS",
+    price: 10.90,
     image: ""
   }
 ];
@@ -41,7 +41,8 @@ function renderProducts(category = "Todos", search = "") {
 
   const filteredProducts = products.filter(product => {
     const matchesCategory =
-      category === "Todos" || product.category === category;
+  category === "Todos" ||
+  product.category.trim().toUpperCase() === category.trim().toUpperCase();
 
     const matchesSearch =
       product.name.toLowerCase().includes(search.toLowerCase());
@@ -258,5 +259,64 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
+  /* =========================
+     CARRINHO
+  ========================= */
 
+  const openCart = document.getElementById("openCart");
+  const closeCart = document.getElementById("closeCart");
+  const cartOverlay = document.getElementById("cartOverlay");
+  const sendOrder = document.getElementById("sendOrder");
+
+  if (openCart) {
+    openCart.addEventListener("click", () => {
+      document.body.classList.add("cart-open");
+    });
+  }
+
+  if (closeCart) {
+    closeCart.addEventListener("click", () => {
+      document.body.classList.remove("cart-open");
+    });
+  }
+
+  if (cartOverlay) {
+    cartOverlay.addEventListener("click", () => {
+      document.body.classList.remove("cart-open");
+    });
+  }
+
+  if (sendOrder) {
+    sendOrder.addEventListener("click", () => {
+
+      const nickname =
+        document.getElementById("nickname").value.trim();
+
+      const cartMessage =
+        document.getElementById("cartMessage");
+
+      if (cart.length === 0) {
+        cartMessage.textContent =
+          "Seu carrinho está vazio 💗";
+        return;
+      }
+
+      if (!nickname) {
+        cartMessage.textContent =
+          "Digite seu nick antes de enviar 💗";
+        return;
+      }
+
+      const items = cart
+        .map(product => product.name)
+        .join(", ");
+
+      const total = cart
+        .reduce((sum, product) => sum + product.price, 0);
+
+      cartMessage.textContent =
+        `Pedido pronto! ${items} — Total: ${formatPrice(total)} 💗`;
+
+    });
+  }
 });
