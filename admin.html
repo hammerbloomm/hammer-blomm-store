@@ -1,9 +1,42 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HammerBloom • Pedidos</title><link rel="stylesheet" href="styles.css"></head>
-<body><main><a href="index.html">← Voltar para a loja</a><h1>📦 Painel de pedidos</h1>
-<div id="orders"></div></main><script>
-const orders=JSON.parse(localStorage.getItem('hammerbloom_orders')||'[]');
-const box=document.getElementById('orders');
-box.innerHTML=orders.length?orders.map((o,i)=>`<article class="order"><b>#${i+1} • ${o.nick}</b><p>${o.items.join(', ')}</p><p>Total: R$ ${o.total.toFixed(2).replace('.',',')}</p><small>${o.date}</small></article>`).join(''):'<p>Nenhum pedido ainda.</p>';
+<title>HammerBloom • Gerenciar</title><link rel="stylesheet" href="styles.css"></head>
+<body><main>
+<a href="index.html">← Voltar para a loja</a>
+<h1>⚙️ Gerenciar produtos</h1>
+<p>Cadastre itens cosméticos/não-violentos para aparecerem no catálogo deste navegador.</p>
+<section class="admin-form">
+<label>Nome do produto<input id="name" placeholder="Ex.: Pet Sakura"></label>
+<label>Preço (R$)<input id="price" type="number" step="0.01" placeholder="15,00"></label>
+<label>Emoji ou imagem<input id="image" placeholder="🌸 ou URL de imagem"></label>
+<label>Descrição<input id="desc" placeholder="Uma descrição curta"></label>
+<button class="primary" onclick="addProduct()">Adicionar produto</button>
+<p id="msg"></p>
+</section>
+<h2>Produtos cadastrados</h2><div id="products"></div>
+<hr><h2>📦 Pedidos neste navegador</h2><div id="orders"></div>
+</main>
+<script>
+const defaults=[
+{name:'Pet Bloom',price:8,icon:'🌷',desc:'Item cosmético de exemplo.'},
+{name:'Badge Cherry',price:6,icon:'🍒',desc:'Item cosmético de exemplo.'},
+{name:'Acessório Moon',price:10,icon:'🌙',desc:'Item cosmético de exemplo.'},
+{name:'Skin Sakura',price:12,icon:'🌸',desc:'Item cosmético de exemplo.'}
+];
+function products(){return JSON.parse(localStorage.getItem('hb_products')||'null')||defaults}
+function save(p){localStorage.setItem('hb_products',JSON.stringify(p))}
+function addProduct(){
+ const name=document.getElementById('name').value.trim(), price=Number(document.getElementById('price').value);
+ const icon=document.getElementById('image').value.trim()||'🌸', desc=document.getElementById('desc').value.trim();
+ if(!name||!price){document.getElementById('msg').textContent='Preencha nome e preço.';return}
+ const p=products();p.push({name,price,icon,desc});save(p);document.getElementById('msg').textContent='Produto adicionado! 💗';
+ ['name','price','image','desc'].forEach(id=>document.getElementById(id).value='');render();
+}
+function removeProduct(i){const p=products();p.splice(i,1);save(p);render()}
+function render(){
+ document.getElementById('products').innerHTML=products().map((p,i)=>`<article class="order"><b>${p.icon} ${p.name}</b><p>${p.desc||''}</p><p>R$ ${p.price.toFixed(2).replace('.',',')}</p><button onclick="removeProduct(${i})">Remover</button></article>`).join('');
+ const o=JSON.parse(localStorage.getItem('hammerbloom_orders')||'[]');
+ document.getElementById('orders').innerHTML=o.length?o.map((x,i)=>`<article class="order"><b>#${i+1} • ${x.nick}</b><p>${x.items.join(', ')}</p><p>Total: R$ ${x.total.toFixed(2).replace('.',',')}</p><small>${x.date}</small></article>`).join(''):'<p>Nenhum pedido neste navegador.</p>';
+}
+render();
 </script></body></html>

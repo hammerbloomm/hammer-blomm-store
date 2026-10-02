@@ -1,53 +1,26 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HammerBloom • Loja</title>
-<link rel="stylesheet" href="styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HammerBloom • Loja</title><link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header>
   <div class="brand"><span>🌸</span><div><b>HammerBloom</b><small>lojinha aesthetic</small></div></div>
   <button class="cart-btn" onclick="toggleCart()">🛒 Carrinho <span id="count">0</span></button>
 </header>
-
 <main>
-  <section class="hero">
-    <div>
-      <p class="tag">✦ bem-vindo(a) à HammerBloom ✦</p>
-      <h1>Coisinhas fofas<br><em>para sua coleção</em></h1>
-      <p>Escolha seus itens, coloque seu nick e envie o pedido.</p>
-      <div class="pix">💳 <b>Pagamento somente por PIX</b></div>
-    </div>
-    <div class="flower">🌷</div>
-  </section>
-
-  <section class="notice">💗 <b>Importante:</b> aceitamos somente PIX. O pagamento é combinado após o envio do pedido.</section>
-
-  <section>
-    <h2>Catálogo</h2>
-    <div id="catalog" class="grid"></div>
-  </section>
-
-  <section class="checkout">
-    <h2>Finalizar pedido</h2>
-    <label>Seu nick
-      <input id="nick" placeholder="Digite seu nick">
-    </label>
-    <button class="primary" onclick="finishOrder()">Enviar pedido</button>
-    <p id="msg"></p>
-  </section>
+<section class="hero"><div><p class="tag">✦ bem-vindo(a) à HammerBloom ✦</p>
+<h1>Coisinhas fofas<br><em>para sua coleção</em></h1>
+<p>Escolha seus itens, coloque seu nick e envie o pedido.</p>
+<div class="pix">💳 <b>Pagamento somente por PIX</b></div></div><div class="flower">🌷</div></section>
+<section class="notice">💗 <b>Importante:</b> aceitamos somente PIX. O pagamento é combinado após o envio do pedido.</section>
+<section><div class="section-head"><h2>Catálogo</h2><a href="admin.html">⚙️ Gerenciar produtos</a></div><div id="catalog" class="grid"></div></section>
+<section class="checkout"><h2>Finalizar pedido</h2>
+<label>Seu nick<input id="nick" placeholder="Digite seu nick"></label>
+<button class="primary" onclick="finishOrder()">Enviar pedido</button><p id="msg"></p></section>
 </main>
-
-<aside id="cart">
-  <button class="close" onclick="toggleCart()">×</button>
-  <h2>Seu carrinho 🛍️</h2>
-  <div id="cartItems"></div>
-  <div class="total">Total: R$ <span id="total">0,00</span></div>
-  <p class="pix-small">💳 Somente PIX</p>
-</aside>
-<div id="shade" onclick="toggleCart()"></div>
-<script src="script.js"></script>
-</body>
-</html>
+<aside id="cart"><button class="close" onclick="toggleCart()">×</button><h2>Seu carrinho 🛍️</h2>
+<div id="cartItems"></div><div class="total">Total: R$ <span id="total">0,00</span></div><p class="pix-small">💳 Somente PIX</p></aside>
+<div id="shade" onclick="toggleCart()"></div><script src="script.js"></script>
+</body></html>
