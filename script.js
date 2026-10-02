@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
       )
       .join("\n");
 
-    const pedido = `🛍️ PEDIDO — HAMMERBLOOM STORE
+    const pedido = `🛍️ PEDIDO — HAMMER BLOOM STORE
 
 👤 Nick: ${nickname}
 
