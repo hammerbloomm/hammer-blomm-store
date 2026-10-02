@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HammerBloom • Pedidos</title><link rel="stylesheet" href="styles.css"></head>
+<body><main><a href="index.html">← Voltar para a loja</a><h1>📦 Painel de pedidos</h1>
+<div id="orders"></div></main><script>
+const orders=JSON.parse(localStorage.getItem('hammerbloom_orders')||'[]');
+const box=document.getElementById('orders');
+box.innerHTML=orders.length?orders.map((o,i)=>`<article class="order"><b>#${i+1} • ${o.nick}</b><p>${o.items.join(', ')}</p><p>Total: R$ ${o.total.toFixed(2).replace('.',',')}</p><small>${o.date}</small></article>`).join(''):'<p>Nenhum pedido ainda.</p>';
+</script></body></html>
