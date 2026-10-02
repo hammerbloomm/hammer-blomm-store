@@ -22,495 +22,225 @@ const products = [
   }
 ];
 
-let cart = JSON.parse(localStorage.getItem("hammerbloom-cart")) || [];
+let cart = [];
+let category = "Todos";
+let search = "";
 
-let currentCategory = "Todos";
-let currentSearch = "";
-
-
-/* =========================
-   PREÇO
-========================= */
-
-function formatPrice(price) {
-  return price.toLocaleString("pt-BR", {
+const money = value =>
+  value.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL"
   });
-}
 
 
-/* =========================
-   PRODUTOS
-========================= */
-
-function renderProducts(category = "Todos", search = "") {
-
+function renderProducts() {
   const grid = document.getElementById("productsGrid");
 
-  if (!grid) return;
-
-  const filteredProducts = products.filter(product => {
-
-    const matchesCategory =
+  const list = products.filter(product => {
+    const sameCategory =
       category === "Todos" ||
-      product.category.trim().toUpperCase() ===
-      category.trim().toUpperCase();
+      product.category === category;
 
-    const matchesSearch =
-      product.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
+    const sameSearch =
+      product.name.toLowerCase().includes(
+        search.toLowerCase()
+      );
 
-    return matchesCategory && matchesSearch;
+    return sameCategory && sameSearch;
   });
 
+  grid.innerHTML = list.length
+    ? list.map(product => `
+        <article class="product-card">
+          <div class="product-image">
+            <img src="${product.image}" alt="${product.name}">
+          </div>
 
-  if (filteredProducts.length === 0) {
+          <div class="product-info">
+            <span class="product-category">
+              ${product.category}
+            </span>
 
-    grid.innerHTML = `
-      <div class="empty-products">
-        Nenhum produto encontrado 💗
-      </div>
-    `;
+            <h3>${product.name}</h3>
 
-    return;
-  }
+            <strong class="product-price">
+              ${money(product.price)}
+            </strong>
 
-
-  grid.innerHTML = filteredProducts.map(product => `
-
-    <article class="product-card">
-
-      <div class="product-image">
-
-        ${
-          product.image
-            ? `<img src="${product.image}" alt="${product.name}">`
-            : `<span>Imagem do produto</span>`
-        }
-
-      </div>
-
-
-      <div class="product-info">
-
-        <span class="product-category">
-          ${product.category}
-        </span>
-
-        <h3>${product.name}</h3>
-
-        <strong>
-          ${formatPrice(product.price)}
-        </strong>
-
-        <button
-          class="add-cart"
-          onclick="addToCart(${product.id})"
-        >
-          Adicionar ao carrinho
-        </button>
-
-      </div>
-
-    </article>
-
-  `).join("");
+            <button
+              class="button button-primary"
+              onclick="addToCart(${product.id})"
+            >
+              Adicionar ao carrinho
+            </button>
+          </div>
+        </article>
+      `).join("")
+    : `<p class="empty-state">Nenhum produto encontrado 𖹭</p>`;
 }
 
 
-/* =========================
-   CARRINHO
-========================= */
-
 function addToCart(id) {
-
-  const product = products.find(
-    product => product.id === id
-  );
+  const product = products.find(p => p.id === id);
 
   if (!product) return;
 
   cart.push(product);
-
-  localStorage.setItem(
-    "hammerbloom-cart",
-    JSON.stringify(cart)
-  );
-
   renderCart();
 
-  alert(
-    `${product.name} foi adicionado ao carrinho 💗`
-  );
+  document.body.classList.add("cart-open");
 }
 
 
 function removeFromCart(index) {
-
   cart.splice(index, 1);
-
-  localStorage.setItem(
-    "hammerbloom-cart",
-    JSON.stringify(cart)
-  );
-
   renderCart();
 }
 
 
 function renderCart() {
+  const items = document.getElementById("cartItems");
+  const count = document.getElementById("cartCount");
+  const total = document.getElementById("cartTotal");
 
-  const cartItems =
-    document.getElementById("cartItems");
+  count.textContent = cart.length;
 
-  const cartCount =
-    document.getElementById("cartCount");
+  const sum = cart.reduce(
+    (total, product) => total + product.price,
+    0
+  );
 
-  const cartTotal =
-    document.getElementById("cartTotal");
+  total.textContent = money(sum);
 
+  items.innerHTML = cart.length
+    ? cart.map((product, index) => `
+        <div class="cart-item">
+          <div>
+            <strong>${product.name}</strong>
+            <span>${money(product.price)}</span>
+          </div>
 
-  /* quantidade */
-
-  if (cartCount) {
-
-    cartCount.textContent =
-      cart.length;
-
-  }
-
-
-  /* total */
-
-  if (cartTotal) {
-
-    const total = cart.reduce(
-      (sum, product) =>
-        sum + product.price,
-      0
-    );
-
-    cartTotal.textContent =
-      formatPrice(total);
-
-  }
-
-
-  if (!cartItems) return;
-
-
-  /* carrinho vazio */
-
-  if (cart.length === 0) {
-
-    cartItems.innerHTML = `
-      <p class="empty-cart">
-        Seu carrinho está vazio 💗
-      </p>
-    `;
-
-    return;
-  }
-
-
-  /* produtos do carrinho */
-
-  cartItems.innerHTML = cart.map(
-    (product, index) => `
-
-      <div class="cart-item">
-
-        <div>
-
-          <strong>
-            ${product.name}
-          </strong>
-
-          <span>
-            ${formatPrice(product.price)}
-          </span>
-
+          <button onclick="removeFromCart(${index})">
+            ×
+          </button>
         </div>
-
-        <button
-          onclick="removeFromCart(${index})"
-        >
-          ×
-        </button>
-
-      </div>
-
-    `
-  ).join("");
+      `).join("")
+    : `<p class="empty-state">Seu carrinho está vazio 𖹭</p>`;
 }
 
 
-/* =========================
-   CATEGORIAS
-========================= */
-
-function selectCategory(category) {
-
-  currentCategory = category;
-
-  renderProducts(
-    currentCategory,
-    currentSearch
-  );
-
+function selectCategory(value) {
+  category = value;
+  renderProducts();
 
   document
     .querySelectorAll("#categoryTabs button")
     .forEach(button => {
-
       button.classList.toggle(
         "active",
-        button.dataset.category === category
+        button.dataset.category === value
       );
-
     });
 }
 
 
-/* =========================
-   INICIALIZAÇÃO
-========================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+  renderProducts();
+  renderCart();
 
-    renderProducts();
-
-    renderCart();
-
-
-    /* =========================
-       ABAS DE CATEGORIA
-    ========================= */
-
-    document
-      .querySelectorAll("#categoryTabs button")
-      .forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            selectCategory(
-              button.dataset.category
-            );
-
-          }
-        );
-
+  document
+    .querySelectorAll("#categoryTabs button")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        selectCategory(button.dataset.category);
       });
+    });
 
 
-    /* =========================
-       CARDS DE CATEGORIA
-    ========================= */
+  document
+    .querySelectorAll("[data-jump-category]")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        selectCategory(button.dataset.jumpCategory);
 
-    document
-      .querySelectorAll("[data-jump-category]")
-      .forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const category =
-              button.dataset.jumpCategory;
-
-            selectCategory(category);
-
-
-            const productsSection =
-              document.getElementById("produtos");
-
-            if (productsSection) {
-
-              productsSection.scrollIntoView({
-                behavior: "smooth"
-              });
-
-            }
-
-          }
-        );
-
+        document
+          .getElementById("produtos")
+          .scrollIntoView({
+            behavior: "smooth"
+          });
       });
+    });
 
 
-    /* =========================
-       BUSCA
-    ========================= */
+  document
+    .getElementById("searchInput")
+    .addEventListener("input", event => {
+      search = event.target.value;
+      renderProducts();
+    });
 
-    const searchInput =
-      document.getElementById("searchInput");
+
+  document
+    .getElementById("openCart")
+    .addEventListener("click", () => {
+      document.body.classList.add("cart-open");
+    });
 
 
-    if (searchInput) {
+  document
+    .getElementById("closeCart")
+    .addEventListener("click", () => {
+      document.body.classList.remove("cart-open");
+    });
 
-      searchInput.addEventListener(
-        "input",
-        event => {
 
-          currentSearch =
-            event.target.value;
+  document
+    .getElementById("cartOverlay")
+    .addEventListener("click", () => {
+      document.body.classList.remove("cart-open");
+    });
 
-          renderProducts(
-            currentCategory,
-            currentSearch
-          );
 
-        }
+  document
+    .getElementById("year")
+    .textContent = new Date().getFullYear();
+
+
+  document
+    .getElementById("sendOrder")
+    .addEventListener("click", async () => {
+
+      const nickname =
+        document.getElementById("nickname").value.trim();
+
+      const message =
+        document.getElementById("cartMessage");
+
+      if (!cart.length) {
+        message.textContent =
+          "Seu carrinho está vazio 𖹭";
+        return;
+      }
+
+      if (!nickname) {
+        message.textContent =
+          "Digite seu nick antes de copiar o pedido 𖹭";
+        return;
+      }
+
+      const total = cart.reduce(
+        (sum, product) => sum + product.price,
+        0
       );
 
-    }
+      const items = cart
+        .map(product =>
+          `• ${product.name} — ${money(product.price)}`
+        )
+        .join("\n");
 
-
-    /* =========================
-       ABRIR CARRINHO
-    ========================= */
-
-    const openCart =
-      document.getElementById("openCart");
-
-    const closeCart =
-      document.getElementById("closeCart");
-
-    const cartOverlay =
-      document.getElementById("cartOverlay");
-
-
-    if (openCart) {
-
-      openCart.addEventListener(
-        "click",
-        () => {
-
-          document.body.classList.add(
-            "cart-open"
-          );
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       FECHAR CARRINHO
-    ========================= */
-
-    if (closeCart) {
-
-      closeCart.addEventListener(
-        "click",
-        () => {
-
-          document.body.classList.remove(
-            "cart-open"
-          );
-
-        }
-      );
-
-    }
-
-
-    if (cartOverlay) {
-
-      cartOverlay.addEventListener(
-        "click",
-        () => {
-
-          document.body.classList.remove(
-            "cart-open"
-          );
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       ENVIAR PEDIDO
-    ========================= */
-
-    const sendOrder =
-      document.getElementById("sendOrder");
-
-
-    if (sendOrder) {
-
-      sendOrder.addEventListener(
-        "click",
-        async () => {
-
-          const nicknameInput =
-            document.getElementById("nickname");
-
-          const cartMessage =
-            document.getElementById("cartMessage");
-
-
-          const nickname =
-            nicknameInput
-              ? nicknameInput.value.trim()
-              : "";
-
-
-          /* carrinho vazio */
-
-          if (cart.length === 0) {
-
-            cartMessage.innerHTML =
-              "Seu carrinho está vazio 💗";
-
-            return;
-          }
-
-
-          /* nick vazio */
-
-          if (!nickname) {
-
-            cartMessage.innerHTML =
-              "Digite seu nick antes de copiar o pedido 💗";
-
-            return;
-          }
-
-
-          /* total */
-
-          const total =
-            cart.reduce(
-              (sum, product) =>
-                sum + product.price,
-              0
-            );
-
-
-          /* produtos */
-
-          const items =
-            cart
-              .map(
-                product =>
-                  `• ${product.name} — ${formatPrice(product.price)}`
-              )
-              .join("\n");
-
-
-          /* pedido */
-
-          const pedido =
+      const order =
 `🛍️ PEDIDO — HAMMER BLOOM STORE
 
 👤 Nick: ${nickname}
@@ -518,42 +248,18 @@ document.addEventListener(
 📦 Produtos:
 ${items}
 
-💰 Total: ${formatPrice(total)}
+💰 Total: ${money(total)}
 
-💗 Aguardo as instruções para pagamento!`;
+𖹭 Aguarde as instruções para pagamento!`;
 
+      try {
+        await navigator.clipboard.writeText(order);
 
-          /* copiar */
-
-          try {
-
-            await navigator.clipboard.writeText(
-              pedido
-            );
-
-
-            cartMessage.innerHTML = `
-              <strong>
-                Pedido copiado! 💗
-              </strong>
-              <br>
-              Agora é só colar no Discord.
-            `;
-
-          } catch (error) {
-
-            cartMessage.innerHTML = `
-              Não foi possível copiar automaticamente 😭
-              <br>
-              Selecione e copie o pedido manualmente.
-            `;
-
-          }
-
-        }
-      );
-
-    }
-
-  }
-);
+        message.innerHTML =
+          "<strong>Pedido copiado! 𖹭</strong><br>Agora é só colar no Discord.";
+      } catch {
+        message.textContent =
+          "Não foi possível copiar automaticamente 𖹭";
+      }
+    });
+});
