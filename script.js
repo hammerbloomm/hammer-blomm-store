@@ -27,6 +27,11 @@ let cart = JSON.parse(localStorage.getItem("hammerbloom-cart")) || [];
 let currentCategory = "Todos";
 let currentSearch = "";
 
+
+/* =========================
+   PREÇO
+========================= */
+
 function formatPrice(price) {
   return price.toLocaleString("pt-BR", {
     style: "currency",
@@ -34,40 +39,59 @@ function formatPrice(price) {
   });
 }
 
+
+/* =========================
+   PRODUTOS
+========================= */
+
 function renderProducts(category = "Todos", search = "") {
+
   const grid = document.getElementById("productsGrid");
 
   if (!grid) return;
 
   const filteredProducts = products.filter(product => {
-    
+
+    const matchesCategory =
+      category === "Todos" ||
+      product.category.trim().toUpperCase() ===
+      category.trim().toUpperCase();
+
     const matchesSearch =
-      product.name.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory =
-  category === "Todos" ||
-  product.category.trim().toUpperCase() === category.trim().toUpperCase();
+      product.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
     return matchesCategory && matchesSearch;
   });
 
+
   if (filteredProducts.length === 0) {
+
     grid.innerHTML = `
       <div class="empty-products">
-        Nenhum produto encontrado 💗
+        Nenhum produto encontrado 
       </div>
     `;
+
     return;
   }
 
+
   grid.innerHTML = filteredProducts.map(product => `
+
     <article class="product-card">
 
       <div class="product-image">
+
         ${
           product.image
             ? `<img src="${product.image}" alt="${product.name}">`
             : `<span>Imagem do produto</span>`
         }
+
       </div>
+
 
       <div class="product-info">
 
@@ -81,18 +105,30 @@ function renderProducts(category = "Todos", search = "") {
           ${formatPrice(product.price)}
         </strong>
 
-        <button class="add-cart" onclick="addToCart(${product.id})">
+        <button
+          class="add-cart"
+          onclick="addToCart(${product.id})"
+        >
           Adicionar ao carrinho
         </button>
 
       </div>
 
     </article>
+
   `).join("");
 }
 
+
+/* =========================
+   CARRINHO
+========================= */
+
 function addToCart(id) {
-  const product = products.find(product => product.id === id);
+
+  const product = products.find(
+    product => product.id === id
+  );
 
   if (!product) return;
 
@@ -105,45 +141,14 @@ function addToCart(id) {
 
   renderCart();
 
-  alert(`${product.name} foi adicionado ao carrinho 💗`);
+  alert(
+    `${product.name} foi adicionado ao carrinho 💗`
+  );
 }
 
-function renderCart() {
-  const cartItems = document.getElementById("cartItems");
-  const cartCount = document.getElementById("cartCount");
-
-  if (cartCount) {
-    cartCount.textContent = cart.length;
-  }
-
-  if (!cartItems) return;
-
-  if (cart.length === 0) {
-    cartItems.innerHTML = `
-      <p class="empty-cart">
-        Seu carrinho está vazio 💗
-      </p>
-    `;
-    return;
-  }
-
-  cartItems.innerHTML = cart.map((product, index) => `
-    <div class="cart-item">
-
-      <div>
-        <strong>${product.name}</strong>
-        <span>${formatPrice(product.price)}</span>
-      </div>
-
-      <button onclick="removeFromCart(${index})">
-        ×
-      </button>
-
-    </div>
-  `).join("");
-}
 
 function removeFromCart(index) {
+
   cart.splice(index, 1);
 
   localStorage.setItem(
@@ -155,8 +160,95 @@ function removeFromCart(index) {
 }
 
 
+function renderCart() {
+
+  const cartItems =
+    document.getElementById("cartItems");
+
+  const cartCount =
+    document.getElementById("cartCount");
+
+  const cartTotal =
+    document.getElementById("cartTotal");
+
+
+  /* quantidade */
+
+  if (cartCount) {
+
+    cartCount.textContent =
+      cart.length;
+
+  }
+
+
+  /* total */
+
+  if (cartTotal) {
+
+    const total = cart.reduce(
+      (sum, product) =>
+        sum + product.price,
+      0
+    );
+
+    cartTotal.textContent =
+      formatPrice(total);
+
+  }
+
+
+  if (!cartItems) return;
+
+
+  /* carrinho vazio */
+
+  if (cart.length === 0) {
+
+    cartItems.innerHTML = `
+      <p class="empty-cart">
+        Seu carrinho está vazio 😿
+      </p>
+    `;
+
+    return;
+  }
+
+
+  /* produtos do carrinho */
+
+  cartItems.innerHTML = cart.map(
+    (product, index) => `
+
+      <div class="cart-item">
+
+        <div>
+
+          <strong>
+            ${product.name}
+          </strong>
+
+          <span>
+            ${formatPrice(product.price)}
+          </span>
+
+        </div>
+
+        <button
+          onclick="removeFromCart(${index})"
+        >
+          ×
+        </button>
+
+      </div>
+
+    `
+  ).join("");
+}
+
+
 /* =========================
-   CATEGORIAS DO CATÁLOGO
+   CATEGORIAS
 ========================= */
 
 function selectCategory(category) {
@@ -168,156 +260,258 @@ function selectCategory(category) {
     currentSearch
   );
 
-  document.querySelectorAll(
-    "#categoryTabs button"
-  ).forEach(button => {
 
-    button.classList.toggle(
-      "active",
-      button.dataset.category === category
-    );
+  document
+    .querySelectorAll("#categoryTabs button")
+    .forEach(button => {
 
-  });
-}
-
-
-/* BOTÕES LENDÁRIOS / ÉPICOS / COMUNS */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  renderProducts();
-  renderCart();
-
-
-  /* Abas do catálogo */
-
-  document.querySelectorAll(
-    "#categoryTabs button"
-  ).forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      selectCategory(
-        button.dataset.category
+      button.classList.toggle(
+        "active",
+        button.dataset.category === category
       );
 
     });
-
-  });
-
-
-  /* Cartões grandes de categorias */
-
-  document.querySelectorAll(
-    "[data-jump-category]"
-  ).forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      const category =
-        button.dataset.jumpCategory;
-
-      selectCategory(category);
-
-      const productsSection =
-        document.getElementById("produtos");
-
-      if (productsSection) {
-
-        productsSection.scrollIntoView({
-          behavior: "smooth"
-        });
-
-      }
-
-    });
-
-  });
+}
 
 
-  /* Busca */
-
-  const searchInput =
-    document.getElementById("searchInput");
-
-  if (searchInput) {
-
-    searchInput.addEventListener(
-      "input",
-      event => {
-
-        currentSearch =
-          event.target.value;
-
-        renderProducts(
-          currentCategory,
-          currentSearch
-        );
-
-      }
-    );
-
-  }
 /* =========================
-   CARRINHO
+   INICIALIZAÇÃO
 ========================= */
 
-const openCart = document.getElementById("openCart");
-const closeCart = document.getElementById("closeCart");
-const cartOverlay = document.getElementById("cartOverlay");
-const sendOrder = document.getElementById("sendOrder");
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-if (openCart) {
-  openCart.addEventListener("click", () => {
-    document.body.classList.add("cart-open");
-  });
-}
+    renderProducts();
 
-if (closeCart) {
-  closeCart.addEventListener("click", () => {
-    document.body.classList.remove("cart-open");
-  });
-}
+    renderCart();
 
-if (cartOverlay) {
-  cartOverlay.addEventListener("click", () => {
-    document.body.classList.remove("cart-open");
-  });
-}
 
-if (sendOrder) {
-  sendOrder.addEventListener("click", async () => {
+    /* =========================
+       ABAS DE CATEGORIA
+    ========================= */
 
-    const nickname =
-      document.getElementById("nickname").value.trim();
+    document
+      .querySelectorAll("#categoryTabs button")
+      .forEach(button => {
 
-    const cartMessage =
-      document.getElementById("cartMessage");
+        button.addEventListener(
+          "click",
+          () => {
 
-    if (cart.length === 0) {
-      cartMessage.innerHTML =
-        "Seu carrinho está vazio 💗";
-      return;
+            selectCategory(
+              button.dataset.category
+            );
+
+          }
+        );
+
+      });
+
+
+    /* =========================
+       CARDS DE CATEGORIA
+    ========================= */
+
+    document
+      .querySelectorAll("[data-jump-category]")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const category =
+              button.dataset.jumpCategory;
+
+            selectCategory(category);
+
+
+            const productsSection =
+              document.getElementById("produtos");
+
+            if (productsSection) {
+
+              productsSection.scrollIntoView({
+                behavior: "smooth"
+              });
+
+            }
+
+          }
+        );
+
+      });
+
+
+    /* =========================
+       BUSCA
+    ========================= */
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+
+    if (searchInput) {
+
+      searchInput.addEventListener(
+        "input",
+        event => {
+
+          currentSearch =
+            event.target.value;
+
+          renderProducts(
+            currentCategory,
+            currentSearch
+          );
+
+        }
+      );
+
     }
 
-    if (!nickname) {
-      cartMessage.innerHTML =
-        "Digite seu nick antes de copiar o pedido 💗";
-      return;
+
+    /* =========================
+       ABRIR CARRINHO
+    ========================= */
+
+    const openCart =
+      document.getElementById("openCart");
+
+    const closeCart =
+      document.getElementById("closeCart");
+
+    const cartOverlay =
+      document.getElementById("cartOverlay");
+
+
+    if (openCart) {
+
+      openCart.addEventListener(
+        "click",
+        () => {
+
+          document.body.classList.add(
+            "cart-open"
+          );
+
+        }
+      );
+
     }
 
-    const total = cart.reduce(
-      (sum, product) => sum + product.price,
-      0
-    );
 
-    const items = cart
-      .map(product =>
-        `• ${product.name} — ${formatPrice(product.price)}`
-      )
-      .join("\n");
+    /* =========================
+       FECHAR CARRINHO
+    ========================= */
 
-    const pedido = `🛍️ PEDIDO — HAMMER BLOOM STORE
+    if (closeCart) {
+
+      closeCart.addEventListener(
+        "click",
+        () => {
+
+          document.body.classList.remove(
+            "cart-open"
+          );
+
+        }
+      );
+
+    }
+
+
+    if (cartOverlay) {
+
+      cartOverlay.addEventListener(
+        "click",
+        () => {
+
+          document.body.classList.remove(
+            "cart-open"
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================
+       ENVIAR PEDIDO
+    ========================= */
+
+    const sendOrder =
+      document.getElementById("sendOrder");
+
+
+    if (sendOrder) {
+
+      sendOrder.addEventListener(
+        "click",
+        async () => {
+
+          const nicknameInput =
+            document.getElementById("nickname");
+
+          const cartMessage =
+            document.getElementById("cartMessage");
+
+
+          const nickname =
+            nicknameInput
+              ? nicknameInput.value.trim()
+              : "";
+
+
+          /* carrinho vazio */
+
+          if (cart.length === 0) {
+
+            cartMessage.innerHTML =
+              "Seu carrinho está vazio 😿";
+
+            return;
+          }
+
+
+          /* nick vazio */
+
+          if (!nickname) {
+
+            cartMessage.innerHTML =
+              "Digite seu nick antes de copiar o pedido ";
+
+            return;
+          }
+
+
+          /* total */
+
+          const total =
+            cart.reduce(
+              (sum, product) =>
+                sum + product.price,
+              0
+            );
+
+
+          /* produtos */
+
+          const items =
+            cart
+              .map(
+                product =>
+                  `• ${product.name} — ${formatPrice(product.price)}`
+              )
+              .join("\n");
+
+
+          /* pedido */
+
+          const pedido =
+`🛍️ PEDIDO — HAMMER BLOOM STORE
 
 👤 Nick: ${nickname}
 
@@ -328,26 +522,38 @@ ${items}
 
 💗 Aguardo as instruções para pagamento!`;
 
-    try {
-      await navigator.clipboard.writeText(pedido);
 
-      cartMessage.innerHTML = `
-        <strong>Pedido copiado! 💗</strong><br>
-        Agora é só colar no Discord.
-      `;
+          /* copiar */
 
-    } catch (error) {
+          try {
 
-      cartMessage.innerHTML = `
-        Não foi possível copiar automaticamente 😭<br>
-        Selecione e copie o pedido manualmente.
-      `;
+            await navigator.clipboard.writeText(
+              pedido
+            );
+
+
+            cartMessage.innerHTML = `
+              <strong>
+                Pedido copiado! 𖹭
+              </strong>
+              <br>
+              Agora é só colar no Discord.
+            `;
+
+          } catch (error) {
+
+            cartMessage.innerHTML = `
+              Não foi possível copiar automaticamente 😿
+              <br>
+              Selecione e copie o pedido manualmente.
+            `;
+
+          }
+
+        }
+      );
+
     }
-      `;
-    }
 
-  });
   }
-    });
-  }
-});
+);
