@@ -38,8 +38,9 @@ function renderProducts() {
 
   const list = products.filter(product => {
     const sameCategory =
-      category === "Todos" ||
-      product.category === category;
+  const matchesCategory =
+  category === "Todos" ||
+  product.category.trim().toUpperCase() === category.trim().toUpperCase();
 
     const sameSearch =
       product.name.toLowerCase().includes(
@@ -229,37 +230,62 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const total = cart.reduce(
-        (sum, product) => sum + product.price,
-        0
-      );
+      if (sendOrder) {
+  sendOrder.addEventListener("click", async () => {
 
-      const items = cart
-        .map(product =>
-          `• ${product.name} — ${money(product.price)}`
-        )
-        .join("\n");
+    const nickname =
+      document.getElementById("nickname").value.trim();
 
-      const order =
-`🛍️ PEDIDO — HAMMER BLOOM STORE
+    const cartMessage =
+      document.getElementById("cartMessage");
+
+    if (cart.length === 0) {
+      cartMessage.innerHTML =
+        "Seu carrinho está vazio 💗";
+      return;
+    }
+
+    if (!nickname) {
+      cartMessage.innerHTML =
+        "Digite seu nick antes de copiar o pedido 💗";
+      return;
+    }
+
+    const total = cart.reduce(
+      (sum, product) => sum + product.price,
+      0
+    );
+
+    const items = cart
+      .map(product =>
+        `• ${product.name} — ${formatPrice(product.price)}`
+      )
+      .join("\n");
+
+    const pedido = `🛍️ PEDIDO — HAMMERBLOOM STORE
 
 👤 Nick: ${nickname}
 
 📦 Produtos:
 ${items}
 
-💰 Total: ${money(total)}
+💰 Total: ${formatPrice(total)}
 
-𖹭 Aguarde as instruções para pagamento!`;
+💗 Aguardo as instruções para pagamento!`;
 
-      try {
-        await navigator.clipboard.writeText(order);
+    try {
+      await navigator.clipboard.writeText(pedido);
 
-        message.innerHTML =
-          "<strong>Pedido copiado! 𖹭</strong><br>Agora é só colar no Discord.";
-      } catch {
-        message.textContent =
-          "Não foi possível copiar automaticamente 𖹭";
+      cartMessage.innerHTML = `
+        <strong>Pedido copiado! 💗</strong><br>
+        Agora é só colar no Discord.
+      `;
+    } catch (error) {
+      cartMessage.innerHTML = `
+        Não foi possível copiar automaticamente 😭<br>
+        Selecione e copie o pedido manualmente.
+      `;
+    }
+
+  });
       }
-    });
-});
