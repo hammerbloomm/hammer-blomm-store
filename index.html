@@ -1,25 +1,231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HammerBloom • Loja</title><link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HammerBloom Store">
+  <title>HammerBloom Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <div class="brand"><span>🌸</span><div><b>Hammer Bloom store </b><small>marretas com o melhor preço</small></div></div>
-  <button class="cart-btn" onclick="toggleCart()">🛒 Carrinho <span id="count">0</span></button>
-</header>
-<main>
-<section class="hero"><div><p class="tag">✦ bem-vindo(a) à HammerBloom ✦</p>
-<h1>Coisinhas fofas<br><em>para sua coleção</em></h1>
-<div class="pix">💳 <b>Pagamento somente por PIX</b></div></div><div class="flower">🌷</div></section>
-<section class="notice">💗 <b>Importante:</b> aceitamos somente PIX.</section>
-<section><div class="section-head"><h2>Catálogo</h2><a href="admin.html">⚙️ Gerenciar produtos</a></div><div id="catalog" class="grid"></div></section>
-<section class="checkout"><h2>Finalizar pedido</h2>
-<label>Seu nick<input id="nick" placeholder="Digite seu nick"></label>
-<button class="primary" onclick="finishOrder()">Enviar pedido</button><p id="msg"></p></section>
-</main>
-<aside id="cart"><button class="close" onclick="toggleCart()">×</button><h2>Seu carrinho 🛍️</h2>
-<div id="cartItems"></div><div class="total">Total: R$ <span id="total">0,00</span></div><p class="pix-small"</p></aside>
-<div id="shade" onclick="toggleCart()"></div><script src="script.js"></script>
-</body></html>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#inicio" class="brand" aria-label="HammerBloom Store - início">
+        <img src="images/logo.png" alt="HammerBloom Store">
+      </a>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="#inicio">Início</a>
+        <a href="#produtos">Produtos</a>
+        <a href="#categorias">Categorias</a>
+        <a href="#faq">Dúvidas</a>
+        <a href="#suporte">Suporte</a>
+      </nav>
+
+      <button class="cart-button" id="openCart" type="button">
+        <span>Carrinho</span>
+        <strong id="cartCount">0</strong>
+      </button>
+
+      <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">HAMMERBLOOM STORE</span>
+          <h1>Seu cantinho <span>HammerBloom</span> começa aqui.</h1>
+          <p>
+            Uma experiência rosa, delicada e organizada para você encontrar suas marretas favoritas com facilidade.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#produtos" class="button button-primary">Ver produtos</a>
+            <a href="#categorias" class="button button-secondary">Ver categorias</a>
+          </div>
+
+          <div class="hero-note">
+            <span class="check">✓</span>
+            <div>
+              <strong>Pagamento via PIX</strong>
+              <small>O pagamento é feito pelo método informado pela loja.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-logo-card">
+          <div class="hero-glow"></div>
+          <img src="images/logo.png" alt="Logo HammerBloom Store">
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits">
+      <div class="container benefits-grid">
+        <article>
+          <span class="benefit-icon">01</span>
+          <div>
+            <h3>Catálogo organizado</h3>
+            <p>Encontre os produtos por categoria ou pela busca.</p>
+          </div>
+        </article>
+        <article>
+          <span class="benefit-icon">02</span>
+          <div>
+            <h3>Compra simples</h3>
+            <p>Escolha o produto, coloque no carrinho e envie o pedido.</p>
+          </div>
+        </article>
+        <article>
+          <span class="benefit-icon">03</span>
+          <div>
+            <h3>Atendimento</h3>
+            <p>Se precisar de ajuda, fale com a HammerBloom.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="products-section section" id="produtos">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CATÁLOGO</span>
+            <h2>Produtos</h2>
+            <p>Escolha o que você quer adicionar ao seu pedido.</p>
+          </div>
+          <div class="search-wrap">
+            <input id="searchInput" type="search" placeholder="Buscar produto..." aria-label="Buscar produto">
+          </div>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs">
+          <button class="active" data-category="Todos">Todos</button>
+          <button data-category="Novidades">Novidades</button>
+          <button data-category="Especiais">Especiais</button>
+          <button data-category="Ofertas">Ofertas</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+        <p class="empty-state" id="emptyState" hidden>Nenhum produto encontrado.</p>
+      </div>
+    </section>
+
+    <section class="categories-section section" id="categorias">
+      <div class="container">
+        <div class="section-heading centered">
+          <span class="eyebrow">ESCOLHA UMA CATEGORIA</span>
+          <h2>Encontre o que procura</h2>
+          <p>Delicada no visual. Organizada na experiência.</p>
+        </div>
+
+        <div class="category-cards">
+          <button data-jump-category="Novidades">
+            <span>01</span>
+            <strong>Novidades</strong>
+            <small>Confira os produtos adicionados recentemente.</small>
+          </button>
+          <button data-jump-category="Especiais">
+            <span>02</span>
+            <strong>Especiais</strong>
+            <small>Itens que merecem um espaço especial.</small>
+          </button>
+          <button data-jump-category="Ofertas">
+            <span>03</span>
+            <strong>Ofertas</strong>
+            <small>Produtos disponíveis em promoção.</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq-section section" id="faq">
+      <div class="container faq-layout">
+        <div class="section-heading">
+          <span class="eyebrow">AJUDA</span>
+          <h2>Dúvidas frequentes</h2>
+          <p>Informações importantes antes de fazer seu pedido.</p>
+        </div>
+
+        <div class="faq-list">
+          <details>
+            <summary>Como faço um pedido?</summary>
+            <p>Escolha os produtos, adicione ao carrinho e preencha seu nick na área de finalização.</p>
+          </details>
+          <details>
+            <summary>Qual é a forma de pagamento?</summary>
+            <p>Atualmente, a loja trabalha com pagamento via PIX.</p>
+          </details>
+          <details>
+            <summary>Como recebo meu pedido?</summary>
+            <p>Depois do envio do pedido, siga as instruções de atendimento da HammerBloom.</p>
+          </details>
+          <details>
+            <summary>Preciso de ajuda com uma compra.</summary>
+            <p>Entre em contato pelo canal de suporte informado pela loja.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="support-section section" id="suporte">
+      <div class="container">
+        <div class="support-card">
+          <div>
+            <span class="eyebrow">SUPORTE</span>
+            <h2>Precisa de ajuda?</h2>
+            <p>Fale com a HammerBloom antes ou depois do seu pedido.</p>
+          </div>
+          <a class="button button-light" href="#" id="supportLink">Falar com suporte</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>HammerBloom Store</strong>
+        <p>Uma loja simples, organizada e feita para sua coleção.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#inicio">Início</a>
+        <a href="#produtos">Produtos</a>
+        <a href="#faq">Dúvidas</a>
+      </div>
+      <p class="copyright">© <span id="year"></span> HammerBloom Store</p>
+    </div>
+  </footer>
+
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Carrinho">
+    <div class="cart-header">
+      <div>
+        <span class="eyebrow">SEU PEDIDO</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button id="closeCart" class="icon-button" type="button" aria-label="Fechar carrinho">×</button>
+    </div>
+
+    <div class="cart-items" id="cartItems"></div>
+
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cartTotal">R$ 0,00</strong>
+      </div>
+
+      <label for="nickname">Seu nick</label>
+      <input id="nickname" type="text" placeholder="Digite seu nick">
+
+      <button class="button button-primary full" id="sendOrder" type="button">Enviar pedido</button>
+      <p class="cart-message" id="cartMessage"></p>
+    </div>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
