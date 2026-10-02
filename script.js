@@ -4,7 +4,7 @@ const products = [
     name: "SakuraParasol",
     category: "LENDÁRIOS",
     price: 1.90,
-    image: "dcf11165903713367ebd0f8da717110a.jpg"
+    image: "sakura-parasol-10df6434702075339d17792225136968-1024-1024.webp"
   },
   {
     id: 2,
