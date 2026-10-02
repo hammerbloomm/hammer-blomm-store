@@ -1,3 +1,14 @@
-name: 'Sakura prasol',
-price: 1,20,
-image: '73660ee735fae81feb2be220669b6eb8.jpg'
+{
+  id: 1,
+  name: "Sakura Parasol",
+  category: "Lendários",
+  price: 3.00,
+  image: "dcf11165903713367ebd0f8da717110a.jpg"
+}
+{
+  id: 1,
+  name: "Spooky Brew",
+  category: "Lendários",
+  price: 2,00,
+  image: "
+}
