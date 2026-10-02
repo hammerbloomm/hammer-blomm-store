@@ -258,34 +258,34 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
-  /* =========================
-     CARRINHO
-  ========================= */
+/* =========================
+   CARRINHO
+========================= */
 
-  const openCart = document.getElementById("openCart");
-  const closeCart = document.getElementById("closeCart");
-  const cartOverlay = document.getElementById("cartOverlay");
-  const sendOrder = document.getElementById("sendOrder");
+const openCart = document.getElementById("openCart");
+const closeCart = document.getElementById("closeCart");
+const cartOverlay = document.getElementById("cartOverlay");
+const sendOrder = document.getElementById("sendOrder");
 
-  if (openCart) {
-    openCart.addEventListener("click", () => {
-      document.body.classList.add("cart-open");
-    });
-  }
+if (openCart) {
+  openCart.addEventListener("click", () => {
+    document.body.classList.add("cart-open");
+  });
+}
 
-  if (closeCart) {
-    closeCart.addEventListener("click", () => {
-      document.body.classList.remove("cart-open");
-    });
-  }
+if (closeCart) {
+  closeCart.addEventListener("click", () => {
+    document.body.classList.remove("cart-open");
+  });
+}
 
-  if (cartOverlay) {
-    cartOverlay.addEventListener("click", () => {
-      document.body.classList.remove("cart-open");
-    });
-  }
+if (cartOverlay) {
+  cartOverlay.addEventListener("click", () => {
+    document.body.classList.remove("cart-open");
+  });
+}
 
-  if (sendOrder) {
+if (sendOrder) {
   sendOrder.addEventListener("click", async () => {
 
     const nickname =
@@ -296,13 +296,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (cart.length === 0) {
       cartMessage.innerHTML =
-        "Seu carrinho está vazio 𖹭";
+        "Seu carrinho está vazio 💗";
       return;
     }
 
     if (!nickname) {
       cartMessage.innerHTML =
-        "Digite seu nick antes de copiar o pedido 𖹭";
+        "Digite seu nick antes de copiar o pedido 💗";
       return;
     }
 
@@ -332,13 +332,17 @@ ${items}
       await navigator.clipboard.writeText(pedido);
 
       cartMessage.innerHTML = `
-        <strong>Pedido copiado! 𖹭</strong><br>
+        <strong>Pedido copiado! 💗</strong><br>
         Agora é só colar no Discord.
       `;
+
     } catch (error) {
+
       cartMessage.innerHTML = `
-        Não foi possível copiar automaticamente <br>
+        Não foi possível copiar automaticamente 😭<br>
         Selecione e copie o pedido manualmente.
+      `;
+    }
       `;
     }
 
