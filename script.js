@@ -287,36 +287,64 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (sendOrder) {
-    sendOrder.addEventListener("click", () => {
+  sendOrder.addEventListener("click", async () => {
 
-      const nickname =
-        document.getElementById("nickname").value.trim();
+    const nickname =
+      document.getElementById("nickname").value.trim();
 
-      const cartMessage =
-        document.getElementById("cartMessage");
+    const cartMessage =
+      document.getElementById("cartMessage");
 
-      if (cart.length === 0) {
-        cartMessage.textContent =
-          "Seu carrinho está vazio 💗";
-        return;
-      }
+    if (cart.length === 0) {
+      cartMessage.innerHTML =
+        "Seu carrinho está vazio 𖹭";
+      return;
+    }
 
-      if (!nickname) {
-        cartMessage.textContent =
-          "Digite seu nick antes de enviar 💗";
-        return;
-      }
+    if (!nickname) {
+      cartMessage.innerHTML =
+        "Digite seu nick antes de copiar o pedido 𖹭";
+      return;
+    }
 
-      const items = cart
-        .map(product => product.name)
-        .join(", ");
+    const total = cart.reduce(
+      (sum, product) => sum + product.price,
+      0
+    );
 
-      const total = cart
-        .reduce((sum, product) => sum + product.price, 0);
+    const items = cart
+      .map(product =>
+        `• ${product.name} — ${formatPrice(product.price)}`
+      )
+      .join("\n");
 
-      cartMessage.textContent =
-        `Pedido pronto! ${items} — Total: ${formatPrice(total)} 💗`;
+    const pedido = `🛍️ PEDIDO — HAMMER BLOOM STORE
 
+👤 Nick: ${nickname}
+
+📦 Produtos:
+${items}
+
+💰 Total: ${formatPrice(total)}
+
+💗 Aguardo as instruções para pagamento!`;
+
+    try {
+      await navigator.clipboard.writeText(pedido);
+
+      cartMessage.innerHTML = `
+        <strong>Pedido copiado! 𖹭</strong><br>
+        Agora é só colar no Discord.
+      `;
+    } catch (error) {
+      cartMessage.innerHTML = `
+        Não foi possível copiar automaticamente <br>
+        Selecione e copie o pedido manualmente.
+      `;
+    }
+
+  });
+  }
     });
   }
 });
