@@ -18,7 +18,7 @@ const products = [
     name: "Party Ballons",
     category: "LENDÁRIOS",
     price: 10.90,
-    image: ""
+    image: "party-ballons-e2c0afe19ab06790ea17700035793224-1024-1024.webp"
   }
 ];
 
