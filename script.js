@@ -70,7 +70,7 @@ function renderProducts(category = "Todos", search = "") {
 
     grid.innerHTML = `
       <div class="empty-products">
-        Nenhum produto encontrado 
+        Nenhum produto encontrado 💗
       </div>
     `;
 
@@ -207,7 +207,7 @@ function renderCart() {
 
     cartItems.innerHTML = `
       <p class="empty-cart">
-        Seu carrinho está vazio 😿
+        Seu carrinho está vazio 💗
       </p>
     `;
 
@@ -470,7 +470,7 @@ document.addEventListener(
           if (cart.length === 0) {
 
             cartMessage.innerHTML =
-              "Seu carrinho está vazio 😿";
+              "Seu carrinho está vazio 💗";
 
             return;
           }
@@ -481,7 +481,7 @@ document.addEventListener(
           if (!nickname) {
 
             cartMessage.innerHTML =
-              "Digite seu nick antes de copiar o pedido ";
+              "Digite seu nick antes de copiar o pedido 💗";
 
             return;
           }
@@ -534,7 +534,7 @@ ${items}
 
             cartMessage.innerHTML = `
               <strong>
-                Pedido copiado! 𖹭
+                Pedido copiado! 💗
               </strong>
               <br>
               Agora é só colar no Discord.
@@ -543,7 +543,7 @@ ${items}
           } catch (error) {
 
             cartMessage.innerHTML = `
-              Não foi possível copiar automaticamente 😿
+              Não foi possível copiar automaticamente 😭
               <br>
               Selecione e copie o pedido manualmente.
             `;
