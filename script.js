@@ -1,8 +1,8 @@
 const products = [
   {
     id: 1,
-    name: "Sakura Parasol",
-    category:LENDÁRIOS",
+    name: "SakuraParasol",
+    category: "LENDÁRIOS",
     price: 1.90,
     image: "dcf11165903713367ebd0f8da717110a.jpg"
   },
@@ -16,13 +16,16 @@ const products = [
   {
     id: 3,
     name: "Oferta Pink",
-    category: "Ofertas",
+    category: "COMUNS",
     price: 39.90,
     image: ""
   }
 ];
 
 let cart = JSON.parse(localStorage.getItem("hammerbloom-cart")) || [];
+
+let currentCategory = "Todos";
+let currentSearch = "";
 
 function formatPrice(price) {
   return price.toLocaleString("pt-BR", {
@@ -57,6 +60,7 @@ function renderProducts(category = "Todos", search = "") {
 
   grid.innerHTML = filteredProducts.map(product => `
     <article class="product-card">
+
       <div class="product-image">
         ${
           product.image
@@ -66,14 +70,23 @@ function renderProducts(category = "Todos", search = "") {
       </div>
 
       <div class="product-info">
-        <span class="product-category">${product.category}</span>
+
+        <span class="product-category">
+          ${product.category}
+        </span>
+
         <h3>${product.name}</h3>
-        <strong>${formatPrice(product.price)}</strong>
+
+        <strong>
+          ${formatPrice(product.price)}
+        </strong>
 
         <button class="add-cart" onclick="addToCart(${product.id})">
           Adicionar ao carrinho
         </button>
+
       </div>
+
     </article>
   `).join("");
 }
@@ -116,6 +129,7 @@ function renderCart() {
 
   cartItems.innerHTML = cart.map((product, index) => `
     <div class="cart-item">
+
       <div>
         <strong>${product.name}</strong>
         <span>${formatPrice(product.price)}</span>
@@ -124,6 +138,7 @@ function renderCart() {
       <button onclick="removeFromCart(${index})">
         ×
       </button>
+
     </div>
   `).join("");
 }
@@ -139,7 +154,109 @@ function removeFromCart(index) {
   renderCart();
 }
 
+
+/* =========================
+   CATEGORIAS DO CATÁLOGO
+========================= */
+
+function selectCategory(category) {
+
+  currentCategory = category;
+
+  renderProducts(
+    currentCategory,
+    currentSearch
+  );
+
+  document.querySelectorAll(
+    "#categoryTabs button"
+  ).forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.category === category
+    );
+
+  });
+}
+
+
+/* BOTÕES LENDÁRIOS / ÉPICOS / COMUNS */
+
 document.addEventListener("DOMContentLoaded", () => {
+
   renderProducts();
   renderCart();
+
+
+  /* Abas do catálogo */
+
+  document.querySelectorAll(
+    "#categoryTabs button"
+  ).forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      selectCategory(
+        button.dataset.category
+      );
+
+    });
+
+  });
+
+
+  /* Cartões grandes de categorias */
+
+  document.querySelectorAll(
+    "[data-jump-category]"
+  ).forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const category =
+        button.dataset.jumpCategory;
+
+      selectCategory(category);
+
+      const productsSection =
+        document.getElementById("produtos");
+
+      if (productsSection) {
+
+        productsSection.scrollIntoView({
+          behavior: "smooth"
+        });
+
+      }
+
+    });
+
+  });
+
+
+  /* Busca */
+
+  const searchInput =
+    document.getElementById("searchInput");
+
+  if (searchInput) {
+
+    searchInput.addEventListener(
+      "input",
+      event => {
+
+        currentSearch =
+          event.target.value;
+
+        renderProducts(
+          currentCategory,
+          currentSearch
+        );
+
+      }
+    );
+
+  }
+
 });
