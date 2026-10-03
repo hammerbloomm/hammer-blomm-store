@@ -241,16 +241,16 @@ document.addEventListener("DOMContentLoaded", () => {
         .join("\n");
 
       const order =
-`🛍️ PEDIDO — HAMMER BLOOM STORE
+`PEDIDO — HAMMER BLOOM STORE
 
-👤 Nick: ${nickname}
+Nick: ${nickname}
 
-📦 Produtos:
+Produtos:
 ${items}
 
-💰 Total: ${money(total)}
+Total: ${money(total)}
 
-𖹭 Aguardo as instruções para pagamento!`;
+Aguardo as instruções para pagamento!`;
 
       try {
         await navigator.clipboard.writeText(order);
